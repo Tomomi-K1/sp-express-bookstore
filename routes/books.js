@@ -1,6 +1,7 @@
 const express = require("express");
 const Book = require("../models/book");
 const jsonschema = require('jsonschema');
+// const { validate } = require("jsonschema"); // sp solution
 const bookSchema = require('../schema/bookschema.json');
 const bookUpdateSchema = require('../schema/bookUpdateSchema.json')
 const ExpressError = require('../expressError');
@@ -47,6 +48,27 @@ router.post("/", async function (req, res, next) {
     return res.status(201).json({ book });
     }
 
+    // SP solution
+     /** POST /   bookData => {book: newBook}  */
+
+// router.post("/", async function(req, res, next) {
+//   try {
+//     const validation = validate(req.body, bookSchemaNew);
+//     if (!validation.valid) {
+//       return next({
+//         status: 400,
+//         error: validation.errors.map(e => e.stack)
+//       });
+//     }
+//     const book = await Book.create(req.body);
+//     return res.status(201).json({book});
+//   }
+
+//   catch (err) {
+//     return next(err);
+//   }
+// });
+
   } catch (err) {
     if(err.code == 23505){
       let error = new ExpressError('this isbn number already exists', 400)
@@ -74,6 +96,31 @@ router.put("/:isbn", async function (req, res, next) {
     return next(err);
   }
 });
+
+// sp solution for put request
+// router.put("/:isbn", async function(req, res, next) {
+//   try {
+//     if ("isbn" in req.body) {
+//       return next({
+//         status: 400,
+//         message: "Not allowed"
+//       });
+//     }
+//     const validation = validate(req.body, bookSchemaUpdate);
+//     if (!validation.valid) {
+//       return next({
+//         status: 400,
+//         errors: validation.errors.map(e => e.stack)
+//       });
+//     }
+//     const book = await Book.update(req.params.isbn, req.body);
+//     return res.json({book});
+//   }
+
+//   catch (err) {
+//     return next(err);
+//   }
+// });
 
 /** DELETE /[isbn]   => {message: "Book deleted"} */
 
